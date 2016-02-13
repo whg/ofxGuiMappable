@@ -220,7 +220,7 @@ bool ofxGuiGroup::mousePressed(ofMouseEventArgs & args){
 		ofMouseEventArgs a = args;
 		for(std::size_t i = 0; i < collection.size(); i++){
 			if(collection[i]->mousePressed(a)){
-				return true;
+//				return true;
 			}
 		}
 	}

@@ -12,6 +12,9 @@ using namespace std;
 
 ofImage ofxPanel::loadIcon;
 ofImage ofxPanel::saveIcon;
+ofImage ofxPanel::closeIcon;
+
+ofEvent<ofxPanelEventArgs> ofxPanel::panelClosedEvent;
 
 ofxPanel::ofxPanel()
 :bGrabbed(false){}
@@ -49,13 +52,20 @@ ofxPanel * ofxPanel::setup(const ofParameterGroup & parameters, const std::strin
 void ofxPanel::loadIcons(){
 	unsigned char loadIconData[] = {0x38,0x88,0xa,0x6,0x7e,0x60,0x50,0x11,0x1c};
 	unsigned char saveIconData[] = {0xff,0x4a,0x95,0xea,0x15,0xa8,0x57,0xa9,0x7f};
+    unsigned char closeIconData[] = {0xff,0x00,0xff,0x00,0xff,0x00,0xff,0x00,0xff};//{0x7e,0xec,0x35,0x2d,0xde,0x95,0x3,0xd6,0xa5};
+    
 	loadIcon.allocate(9, 8, OF_IMAGE_COLOR_ALPHA);
 	saveIcon.allocate(9, 8, OF_IMAGE_COLOR_ALPHA);
+    closeIcon.allocate(9, 8, OF_IMAGE_COLOR_ALPHA);
 	loadStencilFromHex(loadIcon, loadIconData);
 	loadStencilFromHex(saveIcon, saveIconData);
+    loadStencilFromHex(closeIcon, closeIconData);
 
 	loadIcon.getTexture().setTextureMinMagFilter(GL_NEAREST,GL_NEAREST);
 	saveIcon.getTexture().setTextureMinMagFilter(GL_NEAREST,GL_NEAREST);
+    closeIcon.getTexture().setTextureMinMagFilter(GL_NEAREST,GL_NEAREST);
+
+
 }
 
 void ofxPanel::generateDraw(){
@@ -81,8 +91,14 @@ void ofxPanel::generateDraw(){
 	loadBox.height = iconHeight;
 	saveBox.set(loadBox);
 	saveBox.x += iconWidth + iconSpacing;
+    
+//    closeIcon.circle(b.x + iconHeight, b.y + iconHeight, iconHeight * 1.5);
+//    closeBox.set(b.x + header * 0.1, b.y + header * 0.1, header*0.8, header*0.8);
+    closeBox.set(b.x + header / 2. - iconHeight / 2., loadBox.y, iconWidth, iconHeight);
 
-	textMesh = getTextMesh(getName(), textPadding + b.x, header / 2 + 4 + b.y);
+//    closeIcon.circle(closeBox.getCenter(), closeBox.width/2);
+    
+	textMesh = getTextMesh(getName(), textPadding + b.x + iconWidth*1.5, header / 2 + 4 + b.y);
 }
 
 void ofxPanel::render(){
@@ -104,6 +120,9 @@ void ofxPanel::render(){
 	ofDisableTextureEdgeHack();
 	loadIcon.draw(loadBox);
 	saveIcon.draw(saveBox);
+    closeIcon.draw(closeBox);
+    
+    
 	if(texHackEnabled){
 		ofEnableTextureEdgeHack();
 	}
@@ -156,6 +175,12 @@ bool ofxPanel::setValue(float mx, float my, bool bCheck){
 				ofNotifyEvent(savePressedE,this);
 				return true;
 			}
+            
+            if (closeBox.inside(mx, my)) {
+                ofxPanelEventArgs args;
+                args.panel = this;
+                ofNotifyEvent(ofxPanel::panelClosedEvent, args);
+            }
 		}
 	} else if( bGrabbed ){
 		setPosition(mx - grabPt.x,my - grabPt.y);

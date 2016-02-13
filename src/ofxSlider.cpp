@@ -11,6 +11,9 @@ ofxSlider<Type>::ofxSlider(){
 	bUpdateOnReleaseOnly = false;
 	bGuiActive = false;
 	mouseInside = false;
+    lastTimeClicked = 0;
+    keyEditing = true;
+    typedText = "";
 }
 
 template<typename Type>
@@ -77,14 +80,31 @@ bool ofxSlider<Type>::mousePressed(ofMouseEventArgs & args){
 		value.disableEvents();
 	}
     
-    if (ofxMidiMapper::learning) {
-        ofxGuiSelectedArgs guiArgs;
-        guiArgs.baseGui = this;
-        ofNotifyEvent(ofxBaseGui::guiSelectedEvent, guiArgs);
-    }
-    
-    if (args.button == OF_MOUSE_BUTTON_RIGHT) {
+    if (b.inside(args.x, args.y)) {
         
+        if (ofxMidiMapper::learning) {
+            ofxGuiSelectedArgs guiArgs;
+            guiArgs.baseGui = this;
+            guiArgs.type = OF_MOUSE_BUTTON_LEFT;
+            ofNotifyEvent(ofxBaseGui::guiSelectedEvent, guiArgs);
+        }
+        if (args.button == OF_MOUSE_BUTTON_LEFT) {
+            
+            if (ofGetElapsedTimef() - lastTimeClicked < 0.4) {
+                ofRegisterKeyEvents(this);
+                keyEditing = true;
+                typedText = "";
+            }
+            
+            lastTimeClicked = ofGetElapsedTimef();
+        }
+        else if (args.button == OF_MOUSE_BUTTON_RIGHT) {
+            ofxGuiSelectedArgs guiArgs;
+            guiArgs.baseGui = this;
+            guiArgs.type = OF_MOUSE_BUTTON_RIGHT;
+            ofNotifyEvent(ofxBaseGui::guiSelectedEvent, guiArgs);
+            return true;
+        }
     }
     
 	if(setValue(args.x, args.y, true)){
@@ -117,6 +137,46 @@ bool ofxSlider<Type>::mouseReleased(ofMouseEventArgs & args){
 		return false;
 	}
 }
+
+template<typename Type>
+typename std::enable_if<std::is_integral<Type>::value, Type>::type
+getValue(string stringValue){
+    return ofToInt(stringValue);
+}
+
+template<typename Type>
+typename std::enable_if<std::is_floating_point<Type>::value, Type>::type
+getValue(string stringValue){
+    return ofToFloat(stringValue);
+}
+
+
+template<typename Type>
+void ofxSlider<Type>::keyPressed(ofKeyEventArgs &args) {
+    
+    if (args.key == OF_KEY_RETURN) {
+        ofUnregisterKeyEvents(this);
+        keyEditing = false;
+    }
+    
+    typedText+= char(args.key);
+    value = getValue<Type>(typedText);
+    
+    if (value > getMax()) {
+        setMax(value);
+    }
+    else if (value < getMin()) {
+        setMin(value);
+    }
+}
+
+
+
+template<typename Type>
+void ofxSlider<Type>::keyReleased(ofKeyEventArgs &args) {
+    
+}
+
 
 template<typename Type>
 typename std::enable_if<std::is_integral<Type>::value, Type>::type
@@ -259,6 +319,7 @@ template<typename Type>
 void ofxSlider<Type>::valueChanged(Type & value){
     setNeedsRedraw();
 }
+
 
 template class ofxSlider<int8_t>;
 template class ofxSlider<uint8_t>;

@@ -28,6 +28,10 @@ public:
 	virtual bool mouseReleased(ofMouseEventArgs & args);
     virtual bool mouseScrolled(ofMouseEventArgs & args);
 
+    virtual void keyPressed(ofKeyEventArgs &args);
+    virtual void keyReleased(ofKeyEventArgs &args);
+
+
 	void setUpdateOnReleaseOnly(bool bUpdateOnReleaseOnly);
 
 
@@ -46,6 +50,7 @@ public:
 
 	ofAbstractParameter & getParameter();
     
+    
 protected:
 	virtual void render();
 	ofParameter<Type> value;
@@ -59,6 +64,9 @@ protected:
 	ofPath bg, bar;
 	ofVboMesh textMesh;
     
+    float lastTimeClicked;
+    bool keyEditing;
+    string typedText;
 };
 
 typedef ofxSlider<float> ofxFloatSlider;

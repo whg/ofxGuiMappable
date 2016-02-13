@@ -30,6 +30,7 @@ class ofxGuiGroup : public ofxBaseGui {
 		void add(ofParameter <ofColor> & parameter);
 		void add(ofParameter <ofShortColor> & parameter);
 		void add(ofParameter <ofFloatColor> & parameter);
+        void add(ofAbstractParameter & parameter) {}
 
 		void minimize();
 		void maximize();

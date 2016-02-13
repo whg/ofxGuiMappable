@@ -134,8 +134,8 @@ class ofxBaseGui {
 		bool bRegisteredForMouseEvents;
 };
 
-class ofxGuiSelectedArgs : public ofEventArgs {
-public:
+struct ofxGuiSelectedArgs : public ofEventArgs {
     ofxBaseGui *baseGui;
+    int type;
 };
 

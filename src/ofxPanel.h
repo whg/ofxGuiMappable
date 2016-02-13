@@ -4,6 +4,8 @@
 
 class ofxGuiGroup;
 
+class ofxPanelEventArgs;
+
 class ofxPanel : public ofxGuiGroup {
 public:
 	ofxPanel();
@@ -17,6 +19,9 @@ public:
 
 	ofEvent<void> loadPressedE;
 	ofEvent<void> savePressedE;
+    
+    static ofEvent<ofxPanelEventArgs> panelClosedEvent;
+    
 protected:
 	void render();
 	bool setValue(float mx, float my, bool bCheck);
@@ -24,9 +29,13 @@ protected:
 	void loadIcons();
         
 private:
-	ofRectangle loadBox, saveBox;
-	static ofImage loadIcon, saveIcon;
+	ofRectangle loadBox, saveBox, closeBox;
+	static ofImage loadIcon, saveIcon, closeIcon;
     
     ofPoint grabPt;
 	bool bGrabbed;
+};
+
+struct ofxPanelEventArgs : public ofEventArgs {
+    ofxPanel *panel;
 };
