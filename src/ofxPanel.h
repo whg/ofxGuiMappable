@@ -22,6 +22,9 @@ public:
     
     static ofEvent<ofxPanelEventArgs> panelClosedEvent;
     
+    uint64_t getId() const { return uid; }
+    void setId(uint64_t uid) { this->uid = uid; }
+    
 protected:
 	void render();
 	bool setValue(float mx, float my, bool bCheck);
@@ -34,6 +37,8 @@ private:
     
     ofPoint grabPt;
 	bool bGrabbed;
+    
+    uint64_t uid;
 };
 
 struct ofxPanelEventArgs : public ofEventArgs {

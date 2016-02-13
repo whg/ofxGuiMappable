@@ -27,6 +27,8 @@ ofxPanel::ofxPanel(const ofParameterGroup & parameters, const std::string& filen
 	}
 	registerMouseEvents();
 	setNeedsRedraw();
+    
+    uid = ofGetElapsedTimeMillis();
 }
 
 ofxPanel::~ofxPanel(){
