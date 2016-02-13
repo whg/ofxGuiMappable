@@ -2,6 +2,8 @@
 
 #include "ofxPanel.h"
 
+#define PATH_DELIMITER "§"
+
 class ofxPanelManager {
     
 public:
@@ -15,11 +17,12 @@ public:
     
     void draw();
     
-    map<string, std::shared_ptr<ofxPanel>> panels;
+    map<uint64_t, std::shared_ptr<ofxPanel>> panels;
     
 private:
     void setup();
     ofxPanelManager() {}
+    uint16_t ids;
 };
 
 /// make a path to @param gui
@@ -38,5 +41,20 @@ inline string getGuiPath(ofxBaseGui *gui) {
         current = parent;
     }
     
-    return ofJoinString(vector<string>(parents.begin(), parents.end()), "/");
+    return ofJoinString(vector<string>(parents.begin(), parents.end()), PATH_DELIMITER);
+}
+
+inline ofxBaseGui* getGuiRoot(ofxBaseGui *gui) {
+    
+    ofxBaseGui *current = gui;
+    
+    while (true) {
+        ofxBaseGui *parent = current->getParent();
+        if (parent == nullptr) {
+            return current;
+        }
+        current = parent;
+    }
+    
+    return current;
 }

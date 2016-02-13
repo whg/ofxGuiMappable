@@ -20,17 +20,19 @@ ofxPanelManager& ofxPanelManager::get() {
 
 void ofxPanelManager::setup() {
     ofAddListener(ofxPanel::panelClosedEvent, this, &ofxPanelManager::panelClosed);
+    ids = 0;
 }
 
 void ofxPanelManager::panelClosed(ofxPanelEventArgs &args) {
-    cout << args.panel->getName() << " closed" << endl;
-    
-    panels.erase(args.panel->getName());
+    panels.erase(args.panel->getId());
     
 }
 
 void ofxPanelManager::addPanel(std::shared_ptr<ofxPanel> panel) {
-    panels[panel->getName()] = panel;
+    panels[ids] = panel;
+    panel->setId(ids);
+    ids++;
+
 }
 
 void ofxPanelManager::draw() {
@@ -41,9 +43,18 @@ void ofxPanelManager::draw() {
 
 ofxBaseGui& ofxPanelManager::getGuiElem(string path) {
     
-    auto steps = ofSplitString(path, "/");
+    auto steps = ofSplitString(path, PATH_DELIMITER);
     
-    ofxBaseGui *elem = panels[steps[0]].get();
+    
+    
+    ofxBaseGui *elem = nullptr;
+    for (auto &pair : panels) {
+        if (pair.second->getName() == steps[0]) {
+            elem = pair.second.get();
+            break;
+        }
+    }
+    
     
     for (int i = 1; i < steps.size(); i++) {
         if (ofxGuiGroup *group = dynamic_cast<ofxGuiGroup*>(elem)) {
@@ -51,6 +62,5 @@ ofxBaseGui& ofxPanelManager::getGuiElem(string path) {
         }
     }
     
-    cout << elem->getName() << endl;
     return *elem;
 }
