@@ -94,20 +94,26 @@ bool ofxSlider<Type>::mousePressed(ofMouseEventArgs & args){
                 ofRegisterKeyEvents(this);
                 keyEditing = true;
                 typedText = "";
+                return true;
             }
             
             lastTimeClicked = ofGetElapsedTimef();
         }
-        else if (args.button == OF_MOUSE_BUTTON_RIGHT) {
+        else if (args.button == OF_MOUSE_BUTTON_RIGHT || args.button == OF_MOUSE_BUTTON_MIDDLE) {
             ofxGuiSelectedArgs guiArgs;
             guiArgs.baseGui = this;
-            guiArgs.type = OF_MOUSE_BUTTON_RIGHT;
+            guiArgs.type = args.button;
             ofNotifyEvent(ofxBaseGui::guiSelectedEvent, guiArgs);
             return true;
         }
+        
     }
     
 	if(setValue(args.x, args.y, true)){
+        if (keyEditing) {
+            ofUnregisterKeyEvents(this);
+            keyEditing = false;
+        }
 		return true;
 	}else{
 		return false;
@@ -167,6 +173,11 @@ void ofxSlider<Type>::keyPressed(ofKeyEventArgs &args) {
     }
     else if (value < getMin()) {
         setMin(value);
+    }
+    
+    if (value == 0) {
+        ofUnregisterKeyEvents(this);
+        keyEditing = false;
     }
 }
 
