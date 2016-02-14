@@ -42,6 +42,17 @@ bool ofxToggle::mouseMoved(ofMouseEventArgs & args){
 }
 
 bool ofxToggle::mousePressed(ofMouseEventArgs & args){
+
+    if (b.inside(args.x, args.y)) {
+        if (args.button == OF_MOUSE_BUTTON_RIGHT) {
+            ofxGuiSelectedArgs guiArgs;
+            guiArgs.baseGui = this;
+            guiArgs.type = OF_MOUSE_BUTTON_RIGHT;
+            ofNotifyEvent(ofxBaseGui::guiSelectedEvent, guiArgs);
+            return true;
+        }
+    }
+
 	if(setValue(args.x, args.y, true)){
 		return true;
 	}else{

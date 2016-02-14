@@ -11,6 +11,8 @@ ofxGuiGroup::ofxGuiGroup(){
 	spacingNextElement = 3;
 	header = defaultHeight;
 	bGuiActive = false;
+    accumulatedHeight = 0;
+    columns = 0;
 }
 
 ofxGuiGroup::ofxGuiGroup(const ofParameterGroup & parameters, const std::string& filename, float x, float y){
@@ -114,27 +116,41 @@ ofxGuiGroup * ofxGuiGroup::setup(const ofParameterGroup & _parameters, const std
 
 void ofxGuiGroup::add(ofxBaseGui * element){
 	collection.push_back(element);
-
+    
+//    if (accumulatedHeight + element->getHeight() + spacing > 100) {
+//        accumulatedHeight = 0;
+//        columns++;
+//    }
+//    
+//    float x = b.x + columns * (element->getWidth() + spacing);
+//    float y = b.y + accumulatedHeight + header;
+//    
+//    accumulatedHeight+= element->getHeight() + spacing;
 	element->setPosition(b.x, b.y + b.height  + spacing);
+
+//    element->setPosition(x, y);
 
 	b.height += element->getHeight() + spacing;
 
+//    b.height = MIN(b.height, 100);
+//    b.width = (element->getWidth() + spacing) * (columns + 1);
+    
 	//if(b.width<element->getWidth()) b.width = element->getWidth();
 
 	element->unregisterMouseEvents();
 
 	element->setParent(this);
 
-	ofxGuiGroup * subgroup = dynamic_cast <ofxGuiGroup *>(element);
-	if(subgroup != nullptr){
-		subgroup->filename = filename;
-		subgroup->setWidthElements(b.width * .98);
-	}else{
-		if(parent != nullptr){
-			element->setSize(b.width * .98, element->getHeight());
-			element->setPosition(b.x + b.width - element->getWidth(), element->getPosition().y);
-		}
-	}
+//	ofxGuiGroup * subgroup = dynamic_cast <ofxGuiGroup *>(element);
+//	if(subgroup != nullptr){
+//		subgroup->filename = filename;
+//		subgroup->setWidthElements(b.width * .98);
+//	}else{
+//		if(parent != nullptr){
+//			element->setSize(b.width * .98, element->getHeight());
+//			element->setPosition(b.x + b.width - element->getWidth(), element->getPosition().y);
+//		}
+//	}
 
 	parameters.add(element->getParameter());
 	setNeedsRedraw();

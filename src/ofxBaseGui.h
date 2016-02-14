@@ -86,6 +86,10 @@ class ofxBaseGui {
     
         bool toggleVisibility() { visible ^= true; return visible; }
         bool isVisible() { return visible; }
+        void setVisible(bool b) { visible = b; }
+    
+        string path, effectingPath;
+    
 	protected:
 		virtual void render() = 0;
 		bool isGuiDrawing();
@@ -123,9 +127,11 @@ class ofxBaseGui {
 		static std::string saveStencilToHex(const ofImage & img);
 		static void loadStencilFromHex(ofImage & img, unsigned char * data);
 
+public:
 		void setNeedsRedraw();
 		virtual void generateDraw() = 0;
-    
+
+protected:
         bool visible;
 
 	private:

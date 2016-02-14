@@ -82,6 +82,7 @@ ofxBaseGui::ofxBaseGui(){
 	bRegisteredForMouseEvents = false;
 	needsRedraw = true;
 
+    path = effectingPath = "";
 	/*if(!fontLoaded){
 	    loadFont(OF_TTF_MONO,10,true,true);
 	    useTTF=false;

@@ -72,6 +72,8 @@ class ofxGuiGroup : public ofxBaseGui {
 
 		float spacing, spacingNextElement;
 		float header;
+        float accumulatedHeight;
+        int columns;
 
 		template <class ControlType>
 		ControlType & getControlType(const std::string& name);
@@ -87,6 +89,7 @@ class ofxGuiGroup : public ofxBaseGui {
 
 		ofPath border, headerBg;
 		ofVboMesh textMesh;
+    
 };
 
 template <class ControlType>
