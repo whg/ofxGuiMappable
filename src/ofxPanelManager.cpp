@@ -28,16 +28,28 @@ void ofxPanelManager::panelClosed(ofxPanelEventArgs &args) {
     
 }
 
-void ofxPanelManager::addPanel(std::shared_ptr<ofxPanel> panel) {
+void ofxPanelManager::addPanel(std::shared_ptr<ofxPanel> panel, bool hidden) {
+    
+    
+    for (auto &p : panels) {
+        if (p.second->getName() == panel->getName()) {
+            panel->setVisible(!hidden);
+            return;
+        }
+    }
+
     panels[ids] = panel;
     panel->setId(ids);
+    panel->setVisible(!hidden);
     ids++;
 
 }
 
 void ofxPanelManager::draw() {
     for (auto &pair : panels) {
-        pair.second->draw();
+        if (pair.second->isVisible()) {
+            pair.second->draw();
+        }
     }
 }
 

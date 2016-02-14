@@ -11,7 +11,7 @@ public:
     static ofxPanelManager& get();
     
     void panelClosed(ofxPanelEventArgs &args);
-    void addPanel(std::shared_ptr<ofxPanel> panel);
+    void addPanel(std::shared_ptr<ofxPanel> panel, bool hidden=false);
     
     ofxBaseGui& getGuiElem(string path);
     
