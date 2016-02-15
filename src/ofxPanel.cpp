@@ -94,13 +94,13 @@ void ofxPanel::generateDraw(){
 	saveBox.set(loadBox);
 	saveBox.x += iconWidth + iconSpacing;
     
-//    closeIcon.circle(b.x + iconHeight, b.y + iconHeight, iconHeight * 1.5);
-//    closeBox.set(b.x + header * 0.1, b.y + header * 0.1, header*0.8, header*0.8);
     closeBox.set(b.x + header / 2. - iconHeight / 2., loadBox.y, iconWidth, iconHeight);
-
-//    closeIcon.circle(closeBox.getCenter(), closeBox.width/2);
     
-	textMesh = getTextMesh(getName(), textPadding + b.x + iconWidth*1.5, header / 2 + 4 + b.y);
+    auto title = getName();
+    if (title.size() > 17) {
+        title = title.substr(0, 7) + "..." + title.substr(title.size()-8, 8);
+    }
+	textMesh = getTextMesh(title, textPadding + b.x + iconWidth*1.5, header / 2 + 4 + b.y);
 }
 
 void ofxPanel::render(){
